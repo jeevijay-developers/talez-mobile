@@ -68,11 +68,18 @@ class _ProductsGridState extends State<ProductsGrid> {
           ),
           child: Card(
             clipBehavior: Clip.antiAlias,
+            elevation: 4,
+
+            shadowColor: Colors.brown.shade500,
             child: Column(
               children: [
                 Expanded(
                   child: img != null
-                      ? Image.network(img, fit: BoxFit.cover, width: double.infinity)
+                      ? Image.network(
+                          img,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        )
                       : const ColoredBox(color: Colors.black12),
                 ),
                 Padding(
@@ -85,14 +92,19 @@ class _ProductsGridState extends State<ProductsGrid> {
                 ),
                 if (firstVariant != null)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${firstVariant["price"]["amount"]} ${firstVariant["price"]["currencyCode"]}"),
+                        Text(
+                          "${firstVariant["price"]["amount"]} ${firstVariant["price"]["currencyCode"]}",
+                        ),
                         IconButton(
                           tooltip: "Add to cart",
-                          onPressed: () => cart.addVariant(firstVariant["id"]),
+                          onPressed: () => cart.addItem(firstVariant["id"]),
                           icon: const Icon(Icons.add_shopping_cart),
                         ),
                       ],

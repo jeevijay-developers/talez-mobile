@@ -1,16 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:talez/pages/collection_produtcs_page.dart';
 
 class CategoryCard extends StatelessWidget {
   final String title;
-  final String img; // this will now always be a URL
+  final String img;
+  final Map<String, dynamic> collection; // pass the entire collection map
 
-  const CategoryCard({super.key, required this.title, required this.img});
+  const CategoryCard({
+    super.key,
+    required this.title,
+    required this.img,
+    required this.collection,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // TODO: open category products
+        // Navigate to CollectionProductsPage and pass collection
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CollectionProductsPage(
+              collection: collection,
+            ),
+          ),
+        );
       },
       child: Container(
         width: 100,

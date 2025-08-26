@@ -1,3 +1,5 @@
+// Fetch shop metafield for banner image URL
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -111,7 +113,7 @@ class ShopifyService {
   ''';
 
   static Future<Map<String, dynamic>?> getProductByHandle(String handle) async {
-  const query = r'''
+    const query = r'''
     query Product($handle: String!, $imagesCursor: String) {
       product(handle: $handle) {
         id
@@ -136,29 +138,31 @@ class ShopifyService {
     }
   ''';
 
-  List<Map<String, dynamic>> allImages = [];
-  String? cursor;
-  bool hasNextPage = true;
-  Map<String, dynamic>? product;
+    List<Map<String, dynamic>> allImages = [];
+    String? cursor;
+    bool hasNextPage = true;
+    Map<String, dynamic>? product;
 
-  while (hasNextPage) {
-    final data = await runQuery(query, variables: {"handle": handle, "imagesCursor": cursor});
-    product ??= data["data"]["product"];
-    final imagesData = product!["images"];
-    final edges = imagesData["edges"] as List<dynamic>;
-    allImages.addAll(edges.map((e) => e["node"] as Map<String, dynamic>));
-    final pageInfo = imagesData["pageInfo"];
-    hasNextPage = pageInfo["hasNextPage"];
-    cursor = pageInfo["endCursor"];
+    while (hasNextPage) {
+      final data = await runQuery(
+        query,
+        variables: {"handle": handle, "imagesCursor": cursor},
+      );
+      product ??= data["data"]["product"];
+      final imagesData = product!["images"];
+      final edges = imagesData["edges"] as List<dynamic>;
+      allImages.addAll(edges.map((e) => e["node"] as Map<String, dynamic>));
+      final pageInfo = imagesData["pageInfo"];
+      hasNextPage = pageInfo["hasNextPage"];
+      cursor = pageInfo["endCursor"];
+    }
+
+    if (product != null) {
+      product["images"] = allImages; // replace images with all fetched
+    }
+
+    return product;
   }
-
-  if (product != null) {
-    product["images"] = allImages; // replace images with all fetched
-  }
-
-  return product;
-}
-
 
   // -------- COLLECTIONS --------
 
@@ -170,6 +174,10 @@ class ShopifyService {
           id
           title
           handle
+          image{
+          url
+          altText
+          }
         }
       }
     }
@@ -304,5 +312,63 @@ class ShopifyService {
       _cartLinesRemove,
       variables: {"cartId": cartId, "lineIds": lineIds},
     );
+  }
+
+  static const _productsByCollectionQuery = r'''
+query ProductsByCollection($collectionId: ID!, $first: Int!) {
+  collection(id: $collectionId) {
+    products(first: $first) {
+      edges {
+        node {
+          id
+          title
+          handle
+          featuredImage { url }
+          variants(first: 10) {
+            edges {
+              node {
+                id
+                title
+                price { amount currencyCode }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+''';
+
+  static Future<List<Map<String, dynamic>>> getProductsByCollection(
+    String collectionId, {
+    int first = 50,
+  }) async {
+    final data = await runQuery(
+      _productsByCollectionQuery,
+      variables: {"collectionId": collectionId, "first": first},
+    );
+
+    final edges =
+        data["data"]["collection"]?["products"]?["edges"] as List? ?? [];
+    return edges.map((e) => e["node"] as Map<String, dynamic>).toList();
+  }
+
+  static Future<String?> getShopBannerImageUrl({
+    String namespace = "custom",
+    String key = "banner_image_url",
+  }) async {
+    const String query = r'''
+      query GetShopBannerImageMetafield($namespace: String!, $key: String!) {
+        shop {
+          metafield(namespace: $namespace, key: $key) {
+            value
+          }
+        }
+      }
+    ''';
+    final variables = {"namespace": namespace, "key": key};
+    final response = await runQuery(query, variables: variables);
+    return response['data']?['shop']?['metafield']?['value'];
   }
 }

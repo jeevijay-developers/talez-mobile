@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:talez/pages/cart_page.dart';
-import 'package:talez/pages/home_page.dart';
+import 'package:talez/pages/main_screen.dart';
 import 'package:talez/pages/products_page.dart';
 import 'core/cart_provider.dart';
 
@@ -22,9 +21,8 @@ class MyApp extends StatelessWidget {
       title: 'Talez Shopify',
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Color(0xFF5a372d)),
       routes: {
-        "/": (_) => const HomePage(),
-        "/cart": (_) => const CartPage(),
-        "/products": (_) => const ProductsPage(),
+        "/": (_) => const MainScreen(),
+        "/products": (_) => const ProductsPage(collectionId: '', title: ''),
       },
     );
   }
