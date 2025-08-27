@@ -117,7 +117,7 @@ class _CollectionProductsPageState extends State<CollectionProductsPage> {
                                   priceText,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.brown,
+                                    color: Color(0xFF5a372d),
                                   ),
                                 ),
                               ],

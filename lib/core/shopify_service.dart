@@ -90,27 +90,6 @@ class ShopifyService {
     return allProducts;
   }
 
-  static const _productByHandleQuery = r'''
-    query Product($handle: String!) {
-      product(handle: $handle) {
-        id
-        title
-        descriptionHtml     # CHANGED
-        featuredImage { url }
-        images(first: 10) { edges { node { url } } }
-        variants(first: 10) {
-          edges {
-            node {
-              id
-              title
-              availableForSale
-              price { amount currencyCode }
-            }
-          }
-        }
-      }
-    }
-  ''';
 
   static Future<Map<String, dynamic>?> getProductByHandle(String handle) async {
     const query = r'''

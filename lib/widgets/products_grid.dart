@@ -70,7 +70,7 @@ class _ProductsGridState extends State<ProductsGrid> {
             clipBehavior: Clip.antiAlias,
             elevation: 4,
 
-            shadowColor: Colors.brown.shade500,
+            shadowColor: Color(0xFF5a372d),
             child: Column(
               children: [
                 Expanded(

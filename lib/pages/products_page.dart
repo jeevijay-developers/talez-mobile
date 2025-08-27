@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:talez/pages/collection_produtcs_page.dart';
-import 'package:talez/widgets/home_card.dart';
-import 'package:talez/widgets/product_card.dart';
+
 import '../core/shopify_service.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -54,14 +53,7 @@ class _ProductsPageState extends State<ProductsPage> {
               ),
               itemCount: products.length,
               itemBuilder: (context, i) {
-                final p = products[i];
-                final title = p["title"] ?? "No Title";
-                final image =
-                    p["featuredImage"]?["url"] ??
-                    "https://placehold.co/300x300.png";
-                final price = p["variants"]?[0]?["price"]?["amount"] ?? "0.00";
-                final currency =
-                    p["variants"]?[0]?["price"]?["currencyCode"] ?? "USD";
+                
 
                 return CollectionProductsPage(collection: {},
                   

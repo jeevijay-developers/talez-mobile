@@ -5,7 +5,6 @@ import 'package:talez/pages/collection_produtcs_page.dart';
 import 'package:talez/widgets/banner_slider.dart';
 import 'package:talez/widgets/home_card.dart';
 import '../core/shopify_service.dart';
-import 'products_page.dart';
 import 'product_detail_page.dart'; // 👈 make sure you have this
 
 class HomePageBody extends StatefulWidget {
@@ -193,7 +192,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
-                                  color: Colors.brown,
+                                  color: Color(0xFF5a372d),
                                 ),
                               ),
                             ],
@@ -214,7 +213,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.brown,
+                  backgroundColor: Color(0xFF5a372d),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
@@ -248,6 +247,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -256,6 +256,66 @@ class _HomePageBodyState extends State<HomePageBody> {
             : ListView(
                 children: [
                   const BannerSlider(),
+                  SizedBox(height: 16),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF5a372d),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    height: height / 5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Baked by",
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " Talez,",
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " Loved by",
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " India",
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          "From oven to heart, our cookies are more than just sweet treats. They’re little bundles of joy—organic, crunchy, unforgettable.",
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+
                   SizedBox(height: 16),
                   _buildCategorySection(
                     "Best Selling",

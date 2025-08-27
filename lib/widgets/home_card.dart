@@ -50,6 +50,7 @@ class HomeCard extends StatelessWidget {
                 fontSize: 12,
                 letterSpacing: 1.5,
                 color: Colors.grey,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),

@@ -126,7 +126,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         height: _currentImageIndex == index ? 10 : 6,
                         decoration: BoxDecoration(
                           color: _currentImageIndex == index
-                              ? Colors.brown
+                              ? Color(0xFF5a372d)
                               : Colors.grey.shade400,
                           shape: BoxShape.circle,
                         ),
@@ -160,12 +160,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       ),
                     ),
                   ),
+                  SizedBox(width: 10),
                   Text(
                     "₹$price",
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: Colors.brown,
+                      color: Color(0xFF5a372d),
                     ),
                   ),
                 ],
@@ -188,7 +189,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       label: Text(node["title"]),
                       selected: isSelected,
                       checkmarkColor: Colors.white,
-                      selectedColor: Colors.brown,
+                      selectedColor: Color(0xFF5a372d),
                       labelStyle: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: isSelected ? Colors.white : Colors.black87,
@@ -252,7 +253,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.shopping_cart, color: Colors.white),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.brown,
+                    backgroundColor: Color(0xFF5a372d),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -353,7 +354,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.brown,
+                        backgroundColor: Color(0xFF5a372d),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),

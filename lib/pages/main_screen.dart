@@ -34,7 +34,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final titles = ["Talez", "Categories", "Profile", "Your Cart"];
 
     return Scaffold(
       appBar: AppBar(
