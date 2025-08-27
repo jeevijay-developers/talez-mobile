@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:talez/pages/main_screen.dart';
-import 'package:talez/pages/products_page.dart';
 import 'core/cart_provider.dart';
 
 void main() {
@@ -18,11 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Talez Shopify',
+      title: 'Talez',
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Color(0xFF5a372d)),
       routes: {
         "/": (_) => const MainScreen(),
-        "/products": (_) => const ProductsPage(collectionId: '', title: ''),
+        
       },
     );
   }

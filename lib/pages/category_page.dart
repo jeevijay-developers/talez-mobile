@@ -57,7 +57,7 @@ class _CategoriesPageBodyState extends State<CategoriesPageBody> {
 
           final imageUrl = (col["image"] != null && col["image"]["url"] != null)
               ? col["image"]["url"]
-              : "https://placehold.co/200x150.png";
+              : null;
 
           return GestureDetector(
             onTap: () {
@@ -65,9 +65,7 @@ class _CategoriesPageBodyState extends State<CategoriesPageBody> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CollectionProductsPage(
-                    collection: col,
-                  ),
+                  builder: (context) => CollectionProductsPage(collection: col),
                 ),
               );
             },
@@ -82,17 +80,25 @@ class _CategoriesPageBodyState extends State<CategoriesPageBody> {
                   Expanded(
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(12)),
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.network(
-                            "https://placehold.co/200x150.png",
-                            fit: BoxFit.cover,
-                          );
-                        },
+                        top: Radius.circular(12),
                       ),
+                      child: imageUrl != null
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                // On network error, fallback to asset image
+                                return Image.asset(
+                                  "assets/images/placeholder.png",
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            )
+                          : Image.asset(
+                              "assets/images/logo.png",
+                              fit: BoxFit.cover,
+                              color: Colors.grey.shade800,
+                            ),
                     ),
                   ),
                   Padding(

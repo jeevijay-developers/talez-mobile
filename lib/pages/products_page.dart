@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:talez/pages/collection_produtcs_page.dart';
+import 'package:talez/widgets/home_card.dart';
+import 'package:talez/widgets/product_card.dart';
 import '../core/shopify_service.dart';
 
 class ProductsPage extends StatefulWidget {
-  final String collectionId;   // 👈 add this
-  final String title;          // 👈 add this
+  final String collectionId;
+  final String title;
 
   const ProductsPage({
     super.key,
@@ -26,8 +29,9 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   Future<void> loadProducts() async {
-    final result =
-        await ShopifyService.getProductsByCollection(widget.collectionId);
+    final result = await ShopifyService.getProductsByCollection(
+      widget.collectionId,
+    );
     setState(() {
       products = result;
       loading = false;
@@ -37,41 +41,30 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)), // 👈 use the title
+      appBar: AppBar(title: Text(widget.title)),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : GridView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(12),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.7,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+                childAspectRatio: 0.68,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
               ),
               itemCount: products.length,
               itemBuilder: (context, i) {
                 final p = products[i];
-                return Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.network(
-                        p["featuredImage"]?["url"] ??
-                            "https://placehold.co/200.png",
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          p["title"] ?? "No Title",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
+                final title = p["title"] ?? "No Title";
+                final image =
+                    p["featuredImage"]?["url"] ??
+                    "https://placehold.co/300x300.png";
+                final price = p["variants"]?[0]?["price"]?["amount"] ?? "0.00";
+                final currency =
+                    p["variants"]?[0]?["price"]?["currencyCode"] ?? "USD";
+
+                return CollectionProductsPage(collection: {},
+                  
                 );
               },
             ),

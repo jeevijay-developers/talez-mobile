@@ -37,7 +37,10 @@ class _MainScreenState extends State<MainScreen> {
     final titles = ["Talez", "Categories", "Profile", "Your Cart"];
 
     return Scaffold(
-      appBar: AppBar(title: Text(titles[_selectedIndex]), centerTitle: true),
+      appBar: AppBar(
+        title: Image.asset("assets/images/logo.png", width: 70),
+        centerTitle: true,
+      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -45,9 +48,15 @@ class _MainScreenState extends State<MainScreen> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: "Categories"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.grid_view),
+            label: "Categories",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Cart"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: "Cart",
+          ),
         ],
       ),
     );

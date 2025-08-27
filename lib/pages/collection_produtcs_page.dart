@@ -60,6 +60,12 @@ class _CollectionProductsPageState extends State<CollectionProductsPage> {
                       product["featuredImage"]?["url"] ??
                       "https://placehold.co/200x150.png";
 
+                  // Fix for price
+                  final priceNode = product["variants"]?["edges"]?[0]?["node"];
+                  final priceText = priceNode != null
+                      ? "${priceNode["price"]["amount"]} ${priceNode["price"]["currencyCode"]}"
+                      : "";
+
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -70,7 +76,6 @@ class _CollectionProductsPageState extends State<CollectionProductsPage> {
                         ),
                       );
                     },
-
                     child: Card(
                       elevation: 2,
                       shape: RoundedRectangleBorder(
@@ -109,13 +114,10 @@ class _CollectionProductsPageState extends State<CollectionProductsPage> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  product["variants"]?[0]?["price"]?["amount"] !=
-                                          null
-                                      ? "${product["variants"][0]["price"]["amount"]} ${product["variants"][0]["price"]["currencyCode"]}"
-                                      : "",
+                                  priceText,
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.brown,
                                   ),
                                 ),
                               ],

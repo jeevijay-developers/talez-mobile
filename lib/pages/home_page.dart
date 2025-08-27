@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:talez/pages/collection_produtcs_page.dart';
 import 'package:talez/widgets/banner_slider.dart';
+import 'package:talez/widgets/home_card.dart';
 import '../core/shopify_service.dart';
 import 'products_page.dart';
 import 'product_detail_page.dart'; // 👈 make sure you have this
@@ -120,6 +124,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
               return GestureDetector(
                 onTap: () {
+                  log("handle ---> ${p["handle"]}");
                   // 👈 Navigate to product detail page
                   Navigator.push(
                     context,
@@ -178,7 +183,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   color: Colors.black87,
                                 ),
                               ),
@@ -187,7 +192,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 price,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 13,
+                                  fontSize: 15,
                                   color: Colors.brown,
                                 ),
                               ),
@@ -223,13 +228,13 @@ class _HomePageBodyState extends State<HomePageBody> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ProductsPage(
-                        collectionId: collectionId,
-                        title: title,
+                      builder: (_) => CollectionProductsPage(
+                        collection: {"id": collectionId, "title": title},
                       ),
                     ),
                   );
                 },
+
                 child: const Text(
                   "View all",
                   style: TextStyle(fontSize: 15, color: Colors.white),
@@ -244,28 +249,74 @@ class _HomePageBodyState extends State<HomePageBody> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              children: [
-                const BannerSlider(),
-                _buildCategorySection(
-                  "Best Selling",
-                  categoryProducts["Best Selling"]!,
-                  collectionIds["Best Selling"],
-                ),
-                _buildCategorySection(
-                  "Cookies",
-                  categoryProducts["Cookies"]!,
-                  collectionIds["Cookies"],
-                ),
-                _buildCategorySection(
-                  "Sticks",
-                  categoryProducts["Sticks"]!,
-                  collectionIds["Sticks"],
-                ),
-              ],
-            ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: loading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView(
+                children: [
+                  const BannerSlider(),
+                  SizedBox(height: 16),
+                  _buildCategorySection(
+                    "Best Selling",
+                    categoryProducts["Best Selling"]!,
+                    collectionIds["Best Selling"],
+                  ),
+                  SizedBox(height: 16),
+                  HomeCard(
+                    imagePath: 'assets/images/powerseed.png',
+                    subtitle: 'POWER SEED',
+                    mainTitleStart: 'Energize your day with',
+                    mainTitleBold: 'Power Seed',
+                    mainTitleEnd: 'Cookies',
+                    description:
+                        'A delicious, wholesome treat packed with a powerhouse of seeds, all crafted in a 100% butter and palm oil-free recipe.',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ProductDetailPage(
+                            handle: 'power-seed',
+                          ), // 👈 product handle
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  HomeCard(
+                    imagePath: 'assets/images/coconutcookies.jpg',
+                    subtitle: 'COCONUT MACROON COOKIES',
+                    mainTitleStart: 'Delight in Every Bite with',
+                    mainTitleBold: 'Coconut Macroon',
+                    mainTitleEnd: 'Cookies',
+                    description:
+                        'Handmade with care, these cholesterol-free cookies offer a perfect crunch with a soft, chewy center ',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ProductDetailPage(
+                            handle: 'talez-coconut-macaroons-cookies',
+                          ), // 👈 product handle
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildCategorySection(
+                    "Cookies",
+                    categoryProducts["Cookies"]!,
+                    collectionIds["Cookies"],
+                  ),
+
+                  _buildCategorySection(
+                    "Sticks",
+                    categoryProducts["Sticks"]!,
+                    collectionIds["Sticks"],
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }

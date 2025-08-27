@@ -6,6 +6,7 @@ import '../core/shopify_service.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final String handle;
+
   const ProductDetailPage({super.key, required this.handle});
 
   @override
@@ -18,6 +19,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantity = 1;
   bool loading = true;
   bool showFullDescription = false;
+
+  int _currentImageIndex = 0;
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -54,10 +58,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     }
 
     final title = product?["title"] ?? "No Title";
-    final description = product?["descriptionHtml"] ?? ""; // ✅ fixed
+    final description = product?["descriptionHtml"] ?? "";
+
     final images = (product?["images"] ?? [])
         .map<String>((img) => img["url"] as String)
-        .toList(); // ✅ fixed
+        .toList();
 
     final variants = product?["variants"]?["edges"] ?? [];
     final selectedVariant = variants.firstWhere(
@@ -79,15 +84,56 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔹 Image Carousel (uses first if none)
+            // ✅ Image carousel with dot indicators
             if (images.isNotEmpty)
-              Hero(
-                tag: widget.handle,
-                child: Image.network(
-                  images.first,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: 450,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: images.length,
+                        onPageChanged: (index) {
+                          setState(() => _currentImageIndex = index);
+                        },
+                        itemBuilder: (context, index) {
+                          return Image.network(
+                            images[index],
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            loadingBuilder: (context, child, progress) =>
+                                progress == null
+                                ? child
+                                : const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Center(child: Icon(Icons.broken_image)),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(images.length, (index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: _currentImageIndex == index ? 10 : 6,
+                        height: _currentImageIndex == index ? 10 : 6,
+                        decoration: BoxDecoration(
+                          color: _currentImageIndex == index
+                              ? Colors.brown
+                              : Colors.grey.shade400,
+                          shape: BoxShape.circle,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
               )
             else
               Image.network(
@@ -98,7 +144,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
             const SizedBox(height: 12),
 
-            // 🔹 Title + Price
+            // Title + Price
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -128,7 +174,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
             const SizedBox(height: 12),
 
-            // 🔹 Variants
+            // Variants
             if (variants.length > 1)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -157,7 +203,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
             if (variants.length > 1) const SizedBox(height: 16),
 
-            // 🔹 Quantity Selector
+            // Quantity Selector
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -198,7 +244,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
             const SizedBox(height: 20),
 
-            // 🔹 Add to Cart Button
+            // Add to Cart
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(
@@ -239,7 +285,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
             const SizedBox(height: 20),
 
-            // 🔹 Description (trimmed)
+            // Description
+            // 🔹 Description Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -255,56 +302,76 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   ),
                   const SizedBox(height: 8),
 
-                  AnimatedCrossFade(
-                    firstChild: Html(
-                      data: description,
-                      style: {
-                        "body": Style(
-                          maxLines: 3,
-                          textOverflow: TextOverflow.ellipsis,
-                          margin: Margins.zero,
-                          padding: HtmlPaddings.zero,
-                          fontSize: FontSize(14),
-                          lineHeight: LineHeight.number(1.4),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    constraints: showFullDescription
+                        ? const BoxConstraints(maxHeight: 10000)
+                        : const BoxConstraints(maxHeight: 140),
+                    child: Stack(
+                      children: [
+                        SingleChildScrollView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          child: Html(
+                            data: description,
+                            style: {
+                              "body": Style(
+                                margin: Margins.zero,
+                                padding: HtmlPaddings.zero,
+                                fontSize: FontSize(14),
+                                lineHeight: LineHeight.number(1.4),
+                              ),
+                            },
+                          ),
                         ),
-                      },
+                        // Fade effect
+                        if (!showFullDescription)
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: 30,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.white.withOpacity(0.0),
+                                    Colors.white,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                    secondChild: Html(
-                      data: description,
-                      style: {
-                        "body": Style(
-                          margin: Margins.zero,
-                          padding: HtmlPaddings.zero,
-                          fontSize: FontSize(14),
-                          lineHeight: LineHeight.number(1.4),
-                        ),
-                      },
-                    ),
-                    crossFadeState: showFullDescription
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 250),
                   ),
 
+                  const SizedBox(height: 8),
+
                   Center(
-                    child: Container(
-                      width: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.brown,
-                        borderRadius: BorderRadius.circular(60),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.brown,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 8,
+                        ),
                       ),
-                      child: TextButton(
-                        onPressed: () {
-                          setState(() {
-                            showFullDescription = !showFullDescription;
-                          });
-                        },
-                        child: Text(
-                          showFullDescription ? "View Less" : "View More",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      onPressed: () {
+                        setState(
+                          () => showFullDescription = !showFullDescription,
+                        );
+                      },
+                      child: Text(
+                        showFullDescription ? "View Less" : "View More",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
